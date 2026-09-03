@@ -20,6 +20,9 @@ Lab and CloudOps Capstone. Expected completion time is one to two weeks.
 - `environments/dev/` composes the modules;
 - `.github/workflows/terraform.yml` runs formatting and validation checks.
 
+See [TERRAFORM_CONCEPTS.md](TERRAFORM_CONCEPTS.md) for the root/child module
+flow and the roles of variables, locals, data sources, resources, and outputs.
+
 ## Requirements and deployment
 
 Install Terraform 1.10+, AWS CLI v2, and Git. Terraform 1.10+ is required for

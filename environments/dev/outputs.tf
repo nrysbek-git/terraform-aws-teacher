@@ -13,3 +13,17 @@ output "public_subnet_ids" {
   value       = module.network.public_subnet_ids
 }
 
+output "public_subnets" {
+  description = "Subnet IDs and CIDRs keyed by availability zone."
+  value       = module.network.public_subnets
+}
+
+output "deployment_context" {
+  description = "Non-sensitive AWS context useful for verification and CI logs."
+  value = {
+    account_id         = data.aws_caller_identity.current.account_id
+    region             = data.aws_region.current.name
+    environment        = var.environment
+    availability_zones = local.selected_availability_zones
+  }
+}

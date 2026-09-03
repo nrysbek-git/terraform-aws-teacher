@@ -32,6 +32,9 @@ flowchart LR
 - `environments/dev/` — composition root среды dev;
 - `.github/workflows/terraform.yml` — fmt и validate без AWS credentials.
 
+Объяснение `root module`, `child modules`, `variables`, `locals`, `data sources`
+и `outputs`: [TERRAFORM_CONCEPTS.md](TERRAFORM_CONCEPTS.md).
+
 ## Предварительные требования
 
 - Terraform 1.10+ (для native S3 state locking);

@@ -2,6 +2,10 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
 locals {
   name = "${var.project_name}-${var.environment}"
 
@@ -10,6 +14,8 @@ locals {
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
+
+  selected_availability_zones = slice(data.aws_availability_zones.available.names, 0, 2)
 }
 
 module "network" {
@@ -17,7 +23,7 @@ module "network" {
 
   name               = local.name
   vpc_cidr           = var.vpc_cidr
-  availability_zones = slice(data.aws_availability_zones.available.names, 0, 2)
+  availability_zones = local.selected_availability_zones
   tags               = local.common_tags
 }
 
@@ -30,4 +36,3 @@ module "web_server" {
   instance_type = var.instance_type
   tags          = local.common_tags
 }
-
