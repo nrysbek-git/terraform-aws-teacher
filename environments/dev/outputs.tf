@@ -1,6 +1,6 @@
 output "website_url" {
   description = "Open this URL after apply."
-  value       = "http://${module.web_server.public_dns}"
+  value       = "http://${module.web_server.load_balancer_dns}"
 }
 
 output "vpc_id" {
@@ -28,9 +28,19 @@ output "deployment_context" {
   }
 }
 
-output "instance_id" {
-  description = "EC2 ID for inventory and SSM Session Manager."
-  value       = module.web_server.instance_id
+output "instance_ids" {
+  description = "EC2 IDs for inventory and SSM Session Manager."
+  value       = module.web_server.instance_ids
+}
+
+output "database_endpoint" {
+  description = "Private RDS endpoint."
+  value       = module.database.endpoint
+}
+
+output "database_master_secret_arn" {
+  description = "Secrets Manager ARN containing the RDS-managed master password."
+  value       = module.database.master_user_secret_arn
 }
 
 output "cloudwatch_alarm_arn" {

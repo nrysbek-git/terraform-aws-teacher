@@ -8,9 +8,14 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet_id" {
-  description = "Public subnet for the instance."
-  type        = string
+variable "private_subnet_ids" {
+  description = "Private subnets for EC2 instances."
+  type        = list(string)
+}
+
+variable "public_subnet_ids" {
+  description = "Public subnets for the Application Load Balancer."
+  type        = list(string)
 }
 
 variable "instance_type" {
@@ -20,7 +25,7 @@ variable "instance_type" {
 }
 
 variable "allowed_http_cidrs" {
-  description = "CIDRs allowed to reach HTTP port 80."
+  description = "CIDRs allowed to reach the public load balancer."
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
@@ -30,4 +35,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-

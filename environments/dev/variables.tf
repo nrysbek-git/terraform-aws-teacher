@@ -33,3 +33,24 @@ variable "instance_type" {
   default     = "t3.micro"
 }
 
+variable "enable_billable_resources" {
+  description = "Explicit confirmation that NAT Gateway, ALB, EC2 and RDS incur charges."
+  type        = bool
+
+  validation {
+    condition     = var.enable_billable_resources
+    error_message = "Set enable_billable_resources=true only after reviewing AWS cost and cleanup instructions."
+  }
+}
+
+variable "database_name" {
+  description = "Initial PostgreSQL database name."
+  type        = string
+  default     = "foundations"
+}
+
+variable "database_username" {
+  description = "PostgreSQL administrator username."
+  type        = string
+  default     = "foundation_admin"
+}

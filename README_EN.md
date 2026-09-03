@@ -2,11 +2,15 @@
 
 [Русский](README.md) | [English](README_EN.md)
 
-This is the instructor reference implementation for an Infrastructure as Code
-lab. Terraform provisions a low-cost AWS environment: a VPC, two public subnets
-in separate Availability Zones, an Internet Gateway, routing, a Security Group,
-and an EC2 instance serving a small Nginx website. An IAM instance profile
-enables Systems Manager access without SSH, while CloudWatch monitors high CPU.
+This instructor reference provisions a three-tier AWS environment: public
+subnets for an ALB and NAT Gateway, private subnets for two Nginx EC2 instances,
+and isolated subnets for PostgreSQL RDS. Systems Manager provides administration
+without SSH, CloudWatch monitors CPU, and RDS manages its password in Secrets
+Manager.
+
+> NAT Gateway, ALB, two EC2 instances, and RDS incur hourly charges. Review
+> current pricing before applying and destroy the workload immediately after the
+> demonstration.
 
 ## Course position
 
@@ -18,6 +22,7 @@ Lab and CloudOps Capstone. Expected completion time is one to two weeks.
 - `bootstrap/` creates the protected S3 remote-state bucket;
 - `modules/network/` is a reusable network module;
 - `modules/web-server/` creates EC2, its Security Group, and Nginx;
+- `modules/database/` creates private RDS and database network controls;
 - `environments/dev/` composes the modules;
 - `.github/workflows/terraform.yml` runs formatting and validation checks.
 
@@ -52,7 +57,7 @@ Open `website_url` in a browser. SSH is intentionally closed, and the instance
 requires IMDSv2. With the Session Manager plugin installed, connect using:
 
 ```bash
-aws ssm start-session --target "$(terraform output -raw instance_id)"
+aws ssm start-session --target "$(terraform output -json instance_ids | jq -r '.[0]')"
 ```
 
 ## Cleanup

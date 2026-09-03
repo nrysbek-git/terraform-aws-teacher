@@ -3,9 +3,14 @@
 [Русский](README.md) | [English](README_EN.md)
 
 Эталонный проект преподавателя для практики Infrastructure as Code. Terraform
-создаёт недорогую AWS-инфраструктуру: VPC, две public subnet в разных Availability
-Zones, Internet Gateway, routing, Security Group и EC2 с Nginx. IAM instance
-profile даёт доступ через Systems Manager без SSH, а CloudWatch контролирует CPU.
+создаёт трёхуровневую AWS-инфраструктуру: public subnets для ALB и NAT Gateway,
+private subnets для двух EC2 с Nginx и isolated subnets для PostgreSQL RDS. IAM
+instance profile даёт доступ через Systems Manager без SSH, CloudWatch следит за
+CPU, а пароль RDS управляется AWS Secrets Manager.
+
+> Этот вариант создаёт NAT Gateway, ALB, две EC2 и RDS, которые оплачиваются
+> почасово. Перед `apply` изучите стоимость, а после демонстрации сразу выполните
+> `terraform destroy`.
 
 ## Место в учебной программе
 
@@ -18,13 +23,20 @@ flowchart LR
   TF --> S3[(S3 remote state)]
   TF --> VPC[AWS VPC]
   VPC --> IGW[Internet Gateway]
-  VPC --> S1[Public subnet AZ-1]
-  VPC --> S2[Public subnet AZ-2]
-  S1 --> SG[Security Group: HTTP]
-  SG --> EC2[EC2 + Nginx]
+  VPC --> PUB[Public subnets x2]
+  VPC --> APP[Private app subnets x2]
+  VPC --> DBNET[Isolated DB subnets x2]
+  PUB --> NAT[NAT Gateway]
+  PUB --> ALB[Application Load Balancer]
+  USER[Browser] -->|HTTP 80| ALB
+  ALB --> EC2[EC2 + Nginx x2]
+  APP --> EC2
+  EC2 -->|outbound| NAT
   SSM[AWS Systems Manager] -->|IAM role, no SSH| EC2
   EC2 --> CW[CloudWatch CPU alarm]
-  USER[Browser] -->|HTTP 80| EC2
+  EC2 -->|PostgreSQL 5432| RDS[(Private RDS PostgreSQL)]
+  DBNET --> RDS
+  RDS --> SM[AWS Secrets Manager]
 ```
 
 ## Структура
@@ -32,6 +44,7 @@ flowchart LR
 - `bootstrap/` — отдельный state для создания защищённого S3 backend;
 - `modules/network/` — reusable network module;
 - `modules/web-server/` — EC2, Security Group и Nginx;
+- `modules/database/` — private RDS, DB subnet group и database Security Group;
 - `environments/dev/` — composition root среды dev;
 - `.github/workflows/terraform.yml` — fmt и validate без AWS credentials.
 
@@ -83,8 +96,11 @@ terraform output website_url
 через AWS Systems Manager Session Manager:
 
 ```bash
-aws ssm start-session --target "$(terraform output -raw instance_id)"
+aws ssm start-session --target "$(terraform output -json instance_ids | jq -r '.[0]')"
 ```
+
+`instance_ids` является списком. Пароль базы не выводится: используйте ARN из
+`database_master_secret_arn` только при наличии разрешения на Secrets Manager.
 
 ## Cleanup
 

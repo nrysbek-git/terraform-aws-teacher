@@ -17,3 +17,18 @@ output "public_subnets" {
     }
   }
 }
+
+output "private_subnet_ids" {
+  description = "Private application subnet IDs."
+  value       = [for availability_zone in var.availability_zones : aws_subnet.private[availability_zone].id]
+}
+
+output "database_subnet_ids" {
+  description = "Isolated database subnet IDs."
+  value       = [for availability_zone in var.availability_zones : aws_subnet.database[availability_zone].id]
+}
+
+output "nat_gateway_id" {
+  description = "NAT Gateway used by private application subnets."
+  value       = aws_nat_gateway.this.id
+}

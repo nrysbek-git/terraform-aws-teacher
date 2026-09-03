@@ -9,8 +9,10 @@ provider, backend, environment variables, common tags, and child modules.
 ## Child modules
 
 - `modules/network` owns VPC, subnets, routing, and the Internet Gateway.
-- `modules/web-server` owns the Security Group, EC2 instance, AMI lookup, and
-  bootstrap script.
+- `modules/web-server` owns Security Groups, EC2 instances, the AMI lookup,
+  bootstrap script, ALB, target group, and monitoring alarm.
+- `modules/database` owns private RDS, its subnet group, network access, and the
+  RDS-managed password in Secrets Manager.
 
 The root passes input variables into each child. Child modules return values via
 outputs. The web-server module receives `vpc_id` and `subnet_id` from the network

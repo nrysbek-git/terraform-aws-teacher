@@ -4,3 +4,7 @@ environment   = "dev"
 vpc_cidr      = "10.30.0.0/16"
 instance_type = "t3.micro"
 
+# NAT Gateway, ALB, two EC2 instances and RDS incur hourly charges.
+enable_billable_resources = true
+database_name             = "foundations"
+database_username         = "foundation_admin"
