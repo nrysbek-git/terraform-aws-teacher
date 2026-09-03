@@ -22,8 +22,8 @@ module, so Terraform automatically creates the correct dependency graph.
 |---|---|---|
 | `variable` | Input supplied by a caller | region, CIDR, instance type |
 | `local` | Named computed value inside a module | resource name, common tags, subnet map |
-| `data` | Read existing provider information | AWS account, region, AZs, latest AMI |
-| `resource` | Create or manage infrastructure | VPC, subnet, EC2, S3 bucket |
+| `data` | Read existing provider information | AWS account, region, AZs, AMI, IAM policy document |
+| `resource` | Create or manage infrastructure | VPC, EC2, IAM role, CloudWatch alarm, S3 bucket |
 | `output` | Return a useful module or root value | website URL, VPC ID, subnet map |
 
 Inspect calculated values before apply:

@@ -13,6 +13,35 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "web" {
+  name_prefix        = "${var.name}-web-"
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
+  tags               = merge(var.tags, { Name = "${var.name}-web-role" })
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.web.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "web" {
+  name_prefix = "${var.name}-web-"
+  role        = aws_iam_role.web.name
+  tags        = merge(var.tags, { Name = "${var.name}-web-profile" })
+}
+
 resource "aws_security_group" "web" {
   name_prefix = "${var.name}-web-"
   description = "Allow HTTP traffic to the training web server"
@@ -47,6 +76,7 @@ resource "aws_instance" "web" {
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [aws_security_group.web.id]
   associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.web.name
 
   metadata_options {
     http_endpoint = "enabled"
@@ -73,3 +103,21 @@ resource "aws_instance" "web" {
   tags = merge(var.tags, { Name = "${var.name}-web" })
 }
 
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+  alarm_name          = "${var.name}-web-high-cpu"
+  alarm_description   = "CPU utilization exceeded 80 percent for ten minutes"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 300
+  statistic           = "Average"
+  threshold           = 80
+  treat_missing_data  = "notBreaching"
+
+  dimensions = {
+    InstanceId = aws_instance.web.id
+  }
+
+  tags = merge(var.tags, { Name = "${var.name}-web-high-cpu" })
+}

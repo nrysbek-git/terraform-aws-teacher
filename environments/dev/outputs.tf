@@ -27,3 +27,13 @@ output "deployment_context" {
     availability_zones = local.selected_availability_zones
   }
 }
+
+output "instance_id" {
+  description = "EC2 ID for inventory and SSM Session Manager."
+  value       = module.web_server.instance_id
+}
+
+output "cloudwatch_alarm_arn" {
+  description = "High CPU alarm created for the EC2 instance."
+  value       = module.web_server.cloudwatch_alarm_arn
+}

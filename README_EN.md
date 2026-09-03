@@ -5,7 +5,8 @@
 This is the instructor reference implementation for an Infrastructure as Code
 lab. Terraform provisions a low-cost AWS environment: a VPC, two public subnets
 in separate Availability Zones, an Internet Gateway, routing, a Security Group,
-and an EC2 instance serving a small Nginx website.
+and an EC2 instance serving a small Nginx website. An IAM instance profile
+enables Systems Manager access without SSH, while CloudWatch monitors high CPU.
 
 ## Course position
 
@@ -48,7 +49,11 @@ terraform output website_url
 ```
 
 Open `website_url` in a browser. SSH is intentionally closed, and the instance
-requires IMDSv2.
+requires IMDSv2. With the Session Manager plugin installed, connect using:
+
+```bash
+aws ssm start-session --target "$(terraform output -raw instance_id)"
+```
 
 ## Cleanup
 

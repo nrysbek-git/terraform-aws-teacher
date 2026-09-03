@@ -4,7 +4,8 @@
 
 Эталонный проект преподавателя для практики Infrastructure as Code. Terraform
 создаёт недорогую AWS-инфраструктуру: VPC, две public subnet в разных Availability
-Zones, Internet Gateway, routing, Security Group и EC2 с Nginx.
+Zones, Internet Gateway, routing, Security Group и EC2 с Nginx. IAM instance
+profile даёт доступ через Systems Manager без SSH, а CloudWatch контролирует CPU.
 
 ## Место в учебной программе
 
@@ -21,6 +22,8 @@ flowchart LR
   VPC --> S2[Public subnet AZ-2]
   S1 --> SG[Security Group: HTTP]
   SG --> EC2[EC2 + Nginx]
+  SSM[AWS Systems Manager] -->|IAM role, no SSH| EC2
+  EC2 --> CW[CloudWatch CPU alarm]
   USER[Browser] -->|HTTP 80| EC2
 ```
 
@@ -76,7 +79,12 @@ terraform output website_url
 ```
 
 Откройте `website_url` в браузере. SSH специально не открыт: Nginx устанавливается
-через `user_data`, а EC2 требует IMDSv2.
+через `user_data`, EC2 требует IMDSv2, а административный доступ выполняется
+через AWS Systems Manager Session Manager:
+
+```bash
+aws ssm start-session --target "$(terraform output -raw instance_id)"
+```
 
 ## Cleanup
 
