@@ -1,4 +1,4 @@
-# Terraform AWS Foundations Lab
+# Terraform AWS Foundations — Teacher Reference
 
 [Русский](README.md) | [English](README_EN.md)
 
@@ -66,5 +66,5 @@ Run `terraform destroy` from `environments/dev` immediately after assessment to
 avoid unnecessary charges. The state bucket has `prevent_destroy`; remove it
 only as a deliberate final cleanup step after preserving or deleting its state.
 
-Students receive the separate `terraform-aws-starter` repository. Do not expose
+Students receive the separate `terraform-aws-student` repository. Do not expose
 this reference solution before submission.

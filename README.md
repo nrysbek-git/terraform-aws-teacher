@@ -1,4 +1,4 @@
-# Terraform AWS Foundations Lab
+# Terraform AWS Foundations — преподавательское решение
 
 [Русский](README.md) | [English](README_EN.md)
 
@@ -115,5 +115,5 @@ terraform destroy
 
 ## Для преподавателя
 
-Студентам выдаётся отдельный репозиторий `terraform-aws-starter`. Это repository
+Студентам выдаётся отдельный репозиторий `terraform-aws-student`. Это repository
 содержит эталонную реализацию и не должен открываться студентам до защиты.
