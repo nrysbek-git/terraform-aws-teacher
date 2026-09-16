@@ -12,6 +12,8 @@ CPU, а пароль RDS управляется AWS Secrets Manager.
 > почасово. Перед `apply` изучите стоимость, а после демонстрации сразу выполните
 > `terraform destroy`.
 
+![Архитектура Terraform AWS](docs/aws-architecture.svg)
+
 ## Место в учебной программе
 
 Проект выполняется после основ Terraform и AWS, перед Kubernetes Todo и BookingKG
@@ -47,6 +49,13 @@ flowchart LR
 - `modules/database/` — private RDS, DB subnet group и database Security Group;
 - `environments/dev/` — composition root среды dev;
 - `.github/workflows/terraform.yml` — fmt и validate без AWS credentials.
+
+Каждый root module разделён по назначению: `versions.tf` фиксирует Terraform и
+providers, `backend.tf` объявляет state backend, `providers.tf` настраивает AWS,
+`data.tf` читает существующие данные, `locals.tf` вычисляет внутренние значения,
+`main.tf` соединяет child modules, а `variables.tf` и `outputs.tf` образуют его
+внешний интерфейс. Terraform читает все `.tf` files каталога как один module;
+имена файлов нужны людям для навигации и review.
 
 Объяснение `root module`, `child modules`, `variables`, `locals`, `data sources`
 и `outputs`: [TERRAFORM_CONCEPTS.md](TERRAFORM_CONCEPTS.md).
@@ -117,3 +126,5 @@ terraform destroy
 
 Студентам выдаётся отдельный репозиторий `terraform-aws-student`. Это repository
 содержит эталонную реализацию и не должен открываться студентам до защиты.
+Порядок демонстрации, проверки plan и критерии остановки описаны в
+[INSTRUCTOR_GUIDE.md](INSTRUCTOR_GUIDE.md).

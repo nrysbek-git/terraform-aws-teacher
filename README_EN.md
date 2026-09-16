@@ -12,6 +12,8 @@ Manager.
 > current pricing before applying and destroy the workload immediately after the
 > demonstration.
 
+![Terraform AWS architecture](docs/aws-architecture.svg)
+
 ## Course position
 
 Use this lab after Terraform and AWS fundamentals and before the Kubernetes Todo
@@ -25,6 +27,11 @@ Lab and BookingKG Capstone. Expected completion time is one to two weeks.
 - `modules/database/` creates private RDS and database network controls;
 - `environments/dev/` composes the modules;
 - `.github/workflows/terraform.yml` runs formatting and validation checks.
+
+The root module separates concerns into `versions.tf`, `backend.tf`,
+`providers.tf`, `data.tf`, `locals.tf`, `main.tf`, `variables.tf`, and
+`outputs.tf`. Terraform loads every `.tf` file in a directory as one module;
+the filenames make navigation and review clearer for humans.
 
 See [TERRAFORM_CONCEPTS.md](TERRAFORM_CONCEPTS.md) for the root/child module
 flow and the roles of variables, locals, data sources, resources, and outputs.
@@ -68,3 +75,6 @@ only as a deliberate final cleanup step after preserving or deleting its state.
 
 Students receive the separate `terraform-aws-student` repository. Do not expose
 this reference solution before submission.
+
+See [INSTRUCTOR_GUIDE.md](INSTRUCTOR_GUIDE.md) for the plan review, controlled
+apply, verification, and cleanup procedure.
