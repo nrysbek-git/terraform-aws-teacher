@@ -15,7 +15,7 @@ Manager.
 ## Course position
 
 Use this lab after Terraform and AWS fundamentals and before the Kubernetes Todo
-Lab and CloudOps Capstone. Expected completion time is one to two weeks.
+Lab and BookingKG Capstone. Expected completion time is one to two weeks.
 
 ## Repository layout
 

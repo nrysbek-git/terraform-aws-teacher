@@ -14,7 +14,7 @@ CPU, а пароль RDS управляется AWS Secrets Manager.
 
 ## Место в учебной программе
 
-Проект выполняется после основ Terraform и AWS, перед Kubernetes Todo и CloudOps
+Проект выполняется после основ Terraform и AWS, перед Kubernetes Todo и BookingKG
 Capstone. Ожидаемая продолжительность — 1–2 недели.
 
 ```mermaid
